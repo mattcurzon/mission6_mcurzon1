@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// Matt Curzon 2/13/22
+// website that gives users ability to add movies to a database
 namespace mission6_mcurzon1
 {
     public class Startup
@@ -29,7 +31,7 @@ namespace mission6_mcurzon1
             services.AddDbContext<MovieContext>(options =>
            {
                options.UseSqlite(Configuration["ConnectionStrings:DefaultConnection"]);
-           });
+           }); // make connection to sqlite database
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

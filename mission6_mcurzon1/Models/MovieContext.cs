@@ -15,7 +15,7 @@ namespace mission6_mcurzon1.Models
         public DbSet<Movie> Movies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder mb)
-        {
+        { // seed database with 3 movies
             mb.Entity<Movie>().HasData(
                 new Movie
                 {

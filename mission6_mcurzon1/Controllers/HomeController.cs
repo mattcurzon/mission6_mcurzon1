@@ -37,9 +37,16 @@ namespace mission6_mcurzon1.Controllers
         [HttpPost]
         public IActionResult AddMovie(Movie movie)
         {
-            _movieContext.Add(movie);
-            _movieContext.SaveChanges();
-            return View("Confirmation", movie);
+            if (ModelState.IsValid) // if input is valid add it to database
+            {
+                _movieContext.Add(movie);
+                _movieContext.SaveChanges();
+                return View("Confirmation", movie); // return confirmation page
+            }
+            else // else return it to the same page
+            {
+                return View();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
