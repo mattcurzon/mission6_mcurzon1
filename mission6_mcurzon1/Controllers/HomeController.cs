@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using mission6_mcurzon1.Models;
 using System;
@@ -32,11 +33,15 @@ namespace mission6_mcurzon1.Controllers
         [HttpGet]
         public IActionResult AddMovie()
         {
+            ViewBag.Categories = _movieContext.Categories.ToList();
+
             return View();
         }
         [HttpPost]
         public IActionResult AddMovie(Movie movie)
         {
+            ViewBag.Categories = _movieContext.Categories.ToList();
+
             if (ModelState.IsValid) // if input is valid add it to database
             {
                 _movieContext.Add(movie);
@@ -48,11 +53,62 @@ namespace mission6_mcurzon1.Controllers
                 return View();
             }
         }
+        [HttpGet]
+        public IActionResult AllMovies()
+        {
+            var movies = _movieContext.Movies
+                .Include(x => x.Category)
+                .OrderBy(x => x.Title)
+                .ToList();
+            return View(movies);
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+        [HttpGet]        
+        public IActionResult Edit(int movieid)
+        {
+            ViewBag.Categories = _movieContext.Categories.ToList();
+
+            var movie = _movieContext.Movies.Single(x => x.MovieID == movieid);
+
+            return View("AddMovie", movie);
+        }
+        [HttpPost]
+        public IActionResult Edit (Movie movie)
+        {
+            ViewBag.Categories = _movieContext.Categories.ToList();
+
+            if (ModelState.IsValid)
+            {   
+                _movieContext.Update(movie);
+                _movieContext.SaveChanges();
+                return RedirectToAction("AllMovies");
+            }
+            else
+            {
+                return View("AddMovie", movie);
+            }
+        }
+        [HttpGet]
+        public IActionResult Delete(int movieid)
+        {
+            var movie = _movieContext.Movies.Single(x => x.MovieID == movieid);
+            return View(movie);
+        }
+        [HttpPost]
+        public IActionResult Delete (Movie movie)
+        {
+
+            _movieContext.Movies.Remove(movie);
+            _movieContext.SaveChanges();
+
+            return RedirectToAction("AllMovies");
+
+
         }
     }
 }
